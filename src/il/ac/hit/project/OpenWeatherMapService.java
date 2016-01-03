@@ -16,9 +16,9 @@ public class OpenWeatherMapService implements IWeatherDataService {
 		InputStream is = null;
 
 		try {
-			url = new URL(
-					"http://api.openweathermap.org/data/2.5/weather?q=" + location.getCity() + "," + location.getCountry() + 
-					"&appid=c4d385d27d48a67c88b0626add008b46");
+			String strb = "http://api.openweathermap.org/data/2.5/weather?q=" + location.getCity() + "," + location.getCountry() + "&appid=c4d385d27d48a67c88b0626add008b46";
+			System.out.println(strb);
+			url = new URL(strb);
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 			con.connect();

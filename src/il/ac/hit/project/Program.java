@@ -7,7 +7,7 @@ public class Program {
 		try {
 			IWeatherDataService service = WeatherDataServiceFactory
 					.getWeatherDataService(WeatherDataServiceFactory.OPEN_WEATHER_MAP);
-			service.getWeatherData(null);
+			service.getWeatherData(new Location("israel", "Holon"));
 		} catch (WeatherDataServiceExeption e) {
 			e.printStackTrace();
 		}

@@ -62,11 +62,10 @@ public class OpenWeatherMapServiceTest {
 		is = Connection.getInputStream();
 		JsonReader jReader = Json.createReader(is);
 		JsonObject objec = jReader.readObject();
-		String expectedCod = "200";
+		int expectedCod = 200;
 		String expectedName = "Holon";
-		String actualCod = objec.getString("cod");
+		int actualCod = objec.getInt("cod");
 		String actualName = objec.getString("name");
-		System.out.println("ActualCod: " + actualCod + ".");
 		assertEquals("cod Check", expectedCod, actualCod);
 		assertEquals("Name Check", expectedName, actualName);
 	}
