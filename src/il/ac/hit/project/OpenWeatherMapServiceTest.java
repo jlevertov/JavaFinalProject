@@ -2,29 +2,22 @@ package il.ac.hit.project;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import org.json.*;
+import org.junit.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import il.ac.hit.project.weather.Temperature;
+import il.ac.hit.project.weather.WeatherDescription;
+import il.ac.hit.project.weather.Wind;
 
 public class OpenWeatherMapServiceTest {
 
-	private OpenWeatherMapService[] WeatherMapArray;
-	private Location LocationToTest;
-	private URL url;
-	private HttpURLConnection Connection;
-	private InputStream is;
+	private OpenWeatherMapService weatherService;
+	private Location locationToTest;
+	private WeatherData expectedWeatherData;
+	private WeatherData actualWeatherData;
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -35,38 +28,48 @@ public class OpenWeatherMapServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		LocationToTest = new Location("israel", "Holon");
-		WeatherMapArray = new OpenWeatherMapService[1];
-		WeatherMapArray[0] = new OpenWeatherMapService();
+		weatherService = OpenWeatherMapService.getInstance();
+		locationToTest = new Location("israel", "holon");
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		WeatherMapArray = null;
+		weatherService = null;
 	}
 
 	@Test
 	public void testGetWeatherData() throws Exception {
-		WeatherMapArray[0].getWeatherData(LocationToTest);
-		TestLocation(LocationToTest);
+		actualWeatherData = weatherService.getWeatherData(locationToTest);
+		expectedWeatherData = getWeatherDataByNewParser(locationToTest);
+
+		assertEquals(expectedWeatherData, actualWeatherData);
 	}
-	
-	private void TestLocation(Location locate) throws Exception
-	{
-		url = new URL(
-				"http://api.openweathermap.org/data/2.5/weather?q=" + locate.getCity() + "," + locate.getCountry() + 
-				"&appid=c4d385d27d48a67c88b0626add008b46");
-		Connection = (HttpURLConnection) url.openConnection();
-		Connection.setRequestMethod("GET");
-		Connection.connect();
-		is = Connection.getInputStream();
-		JsonReader jReader = Json.createReader(is);
-		JsonObject objec = jReader.readObject();
-		int expectedCod = 200;
-		String expectedName = "Holon";
-		int actualCod = objec.getInt("cod");
-		String actualName = objec.getString("name");
-		assertEquals("cod Check", expectedCod, actualCod);
-		assertEquals("Name Check", expectedName, actualName);
+
+	private WeatherData getWeatherDataByNewParser(Location location) throws Exception {
+		String urlStr = "http://api.openweathermap.org/data/2.5/weather?q=" + location.getCity() + ","
+				+ location.getCountry() + "&appid=" + OpenWeatherMapService.getApiId();
+		InputStream is = UrlRequestWrapper.getInputStream(urlStr);
+
+		JSONTokener jToken = new JSONTokener(is);
+		JSONObject jMainObj = new JSONObject(jToken);
+
+		JSONObject jWeatherObj = jMainObj.getJSONArray("weather").getJSONObject(0);
+		WeatherDescription wDescription = new WeatherDescription(jWeatherObj.getString("main"),
+				jWeatherObj.getString("description"));
+
+		JSONObject jTempObj = jMainObj.getJSONObject("main");
+		Temperature wTemperature = new Temperature(
+				MathUtils.round(Temperature.kelvinToCelsius(jTempObj.getDouble("temp")), 2),
+				MathUtils.round(Temperature.kelvinToCelsius(jTempObj.getDouble("temp_min")), 2),
+				MathUtils.round(Temperature.kelvinToCelsius(jTempObj.getDouble("temp_max")), 2),
+				MathUtils.round(jTempObj.getDouble("humidity"), 2));
+
+		JSONObject jWindObj = jMainObj.getJSONObject("wind");
+		Wind wWind = new Wind(MathUtils.round(jWindObj.getDouble("speed"), 2),
+				MathUtils.round(jWindObj.getDouble("deg"), 2));
+
+		WeatherData wData = new WeatherData(wDescription, wTemperature, wWind);
+
+		return wData;
 	}
 }
