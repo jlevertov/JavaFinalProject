@@ -1,7 +1,13 @@
 package il.ac.hit.project;
 
 import javax.swing.*;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.FileNotFoundException;
 
 public class ClientGUI {
 
@@ -26,7 +32,26 @@ public class ClientGUI {
 
 	public static void main(String[] args) {
 		ClientGUI client = new ClientGUI();
-		client.load();
+		client.loadData();
+		client.loadFrame();
+		client.addListeners();
+	}
+
+	private void addListeners() {
+		cboCountry.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (cboCountry.getSelectedItem() == null)
+					return;
+				String selectedCountry = cboCountry.getSelectedItem().toString();
+
+				cboCity.removeAll();
+				for (String city : LocationsCollection.getCities(selectedCountry)) {
+					cboCity.addItem(city);
+				}
+			}
+		});
 	}
 
 	public ClientGUI() {
@@ -48,7 +73,20 @@ public class ClientGUI {
 		lblWind = new JLabel();
 	}
 
-	public void load() {
+	public void loadFrame() {
+		// cboCountry.addItemListener(new ItemListener() {
+		//
+		// @Override
+		// public void itemStateChanged(ItemEvent e) {
+		// String selectedCountry = cboCountry.getSelectedItem().toString();
+		//
+		// cboCity.removeAll();
+		// for (String city : LocationsCollection.getCities(selectedCountry)) {
+		// cboCity.addItem(city);
+		// }
+		// }
+		// });
+
 		pnlWeather.setLayout(new FlowLayout());
 		pnlWeather.add(lblMinMaxTemperature);
 		pnlWeather.add(lblMainTemperature);
@@ -64,9 +102,22 @@ public class ClientGUI {
 		frmMain.add(lblCity);
 		frmMain.add(cboCity);
 		frmMain.add(pnlWeather);
-		
+
+		for (String country : LocationsCollection.getCountries()) {
+			cboCountry.addItem(country);
+		}
+
 		frmMain.setSize(800, 600);
 		frmMain.setVisible(true);
+	}
+
+	private void loadData() {
+		try {
+			LocationsCollection.loadCities();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
