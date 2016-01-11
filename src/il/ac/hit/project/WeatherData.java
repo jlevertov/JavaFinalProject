@@ -88,18 +88,14 @@ public class WeatherData {
 	}
 
 	/**
-	 * Set wind parameters (with validation).
+	 * Set wind parameters (no validation).
 	 * 
 	 * @param wind
 	 *            Wind parameters.
 	 * @throws Exception
 	 */
 	private void setWind(Wind wind) throws Exception {
-		if (wind != null) {
-			this.wind = wind;
-		} else {
-			throw new Exception("Weather wind object is null!");
-		}
+		this.wind = wind;
 	}
 
 	/**
@@ -154,7 +150,12 @@ public class WeatherData {
 	 */
 	@Override
 	public String toString() {
-		return "WeatherData [\n\tdescription=" + description + ", \n\ttemperature=" + temperature + ", \n\twind=" + wind + "\n]";
+		String str = "WeatherData [\n\tdescription=" + description + ", \n\ttemperature=" + temperature;
+		if (wind != null) {
+			str += ", \n\twind=" + wind;
+		}
+		str += "\n]";
+		return str;
 	}
 
 }

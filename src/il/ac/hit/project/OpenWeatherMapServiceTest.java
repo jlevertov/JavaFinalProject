@@ -15,8 +15,6 @@ public class OpenWeatherMapServiceTest {
 
 	private OpenWeatherMapService weatherService;
 	private Location locationToTest;
-	private WeatherData expectedWeatherData;
-	private WeatherData actualWeatherData;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -35,12 +33,13 @@ public class OpenWeatherMapServiceTest {
 	@After
 	public void tearDown() throws Exception {
 		weatherService = null;
+		locationToTest = null;
 	}
 
 	@Test
 	public void testGetWeatherData() throws Exception {
-		actualWeatherData = weatherService.getWeatherData(locationToTest);
-		expectedWeatherData = getWeatherDataByNewParser(locationToTest);
+		WeatherData actualWeatherData = weatherService.getWeatherData(locationToTest);
+		WeatherData expectedWeatherData = getWeatherDataByNewParser(locationToTest);
 
 		assertEquals(expectedWeatherData, actualWeatherData);
 	}
@@ -65,8 +64,19 @@ public class OpenWeatherMapServiceTest {
 				MathUtils.round(jTempObj.getDouble("humidity"), 2));
 
 		JSONObject jWindObj = jMainObj.getJSONObject("wind");
-		Wind wWind = new Wind(MathUtils.round(jWindObj.getDouble("speed"), 2),
-				MathUtils.round(jWindObj.getDouble("deg"), 2));
+
+		Double windSpeed = null;
+		Double windDegree = null;
+		try {
+			windSpeed = jWindObj.getDouble("speed");
+			windDegree = jWindObj.getDouble("deg");
+		} catch (JSONException e) {
+		}
+
+		Wind wWind = null;
+		if (windSpeed != null && windDegree != null) {
+			wWind = new Wind(MathUtils.round(windSpeed, 2), MathUtils.round(windDegree, 2));
+		}
 
 		WeatherData wData = new WeatherData(wDescription, wTemperature, wWind);
 

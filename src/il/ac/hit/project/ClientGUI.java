@@ -36,8 +36,7 @@ public class ClientGUI {
 		try {
 			service = WeatherDataServiceFactory.getWeatherDataService(WeatherDataServiceFactory.OPEN_WEATHER_MAP);
 		} catch (WeatherDataServiceExeption e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			showMessageBox(e.getMessage());
 		}
 
 		frmMain = new JFrame("Weather Service - Java Final Project - Ran&Jacob");
@@ -60,11 +59,48 @@ public class ClientGUI {
 		lblWind = new JLabel();
 	}
 
-	public static void main(String[] args) {
-		ClientGUI client = new ClientGUI();
-		client.loadData();
-		client.loadFrame();
-		client.addListeners();
+	public void load() {
+		loadData();
+		loadFrame();
+		addListeners();
+	}
+
+	private void loadData() {
+		try {
+			LocationsCollection.loadCities();
+		} catch (FileNotFoundException e) {
+			showMessageBox(e.getMessage());
+		}
+	}
+
+	private void loadFrame() {
+
+		pnlWeather.setLayout(new FlowLayout());
+		pnlWeather.add(lblMinMaxTemperature);
+		pnlWeather.add(lblMainTemperature);
+		pnlWeather.add(lblMainDescription);
+		pnlWeather.add(lblDetailedDescription);
+		pnlWeather.add(lblHumidity);
+		pnlWeather.add(lblWind);
+
+		frmMain.setLayout(new FlowLayout());
+		frmMain.add(lblHeader);
+		frmMain.add(lblCountry);
+		frmMain.add(cboCountry);
+		frmMain.add(lblCity);
+		frmMain.add(cboCity);
+		frmMain.add(btnGo);
+		frmMain.add(pnlWeather);
+
+		cboCountry.addItem("");
+		for (String country : LocationsCollection.getCountries()) {
+			cboCountry.addItem(country);
+		}
+		cboCity.addItem("");
+
+		frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmMain.setSize(800, 300);
+		frmMain.setVisible(true);
 	}
 
 	private void addListeners() {
@@ -99,66 +135,31 @@ public class ClientGUI {
 				String selectedCity = cboCity.getSelectedItem().toString();
 
 				if (selectedCountry.equals("") || selectedCity.equals("")) {
+					emptyDataLabels();
 					return;
 				}
 
 				Location location = null;
 				try {
-					location = new Location(selectedCountry, selectedCity);
+					location = new Location(selectedCountry.replaceAll(" ", "_"), selectedCity.replaceAll(" ", "_"));
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					emptyDataLabels();
+					showMessageBox(e1.getMessage());
+					return;
 				}
 
 				WeatherData weatherData = null;
 				try {
 					weatherData = service.getWeatherData(location);
 				} catch (WeatherDataServiceExeption e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					emptyDataLabels();
+					showMessageBox(e1.getMessage());
+					return;
 				}
 
 				setDataLabels(weatherData);
 			}
 		});
-	}
-
-	public void loadFrame() {
-
-		pnlWeather.setLayout(new FlowLayout());
-		pnlWeather.add(lblMinMaxTemperature);
-		pnlWeather.add(lblMainTemperature);
-		pnlWeather.add(lblMainDescription);
-		pnlWeather.add(lblDetailedDescription);
-		pnlWeather.add(lblHumidity);
-		pnlWeather.add(lblWind);
-
-		frmMain.setLayout(new FlowLayout());
-		frmMain.add(lblHeader);
-		frmMain.add(lblCountry);
-		frmMain.add(cboCountry);
-		frmMain.add(lblCity);
-		frmMain.add(cboCity);
-		frmMain.add(btnGo);
-		frmMain.add(pnlWeather);
-
-		cboCountry.addItem("");
-		for (String country : LocationsCollection.getCountries()) {
-			cboCountry.addItem(country);
-		}
-		cboCity.addItem("");
-
-		frmMain.setSize(800, 600);
-		frmMain.setVisible(true);
-	}
-
-	private void loadData() {
-		try {
-			LocationsCollection.loadCities();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private void setDataLabels(WeatherData weatherData) {
@@ -171,8 +172,23 @@ public class ClientGUI {
 		lblMainDescription.setText(description.getMain());
 		lblDetailedDescription.setText(description.getDetailed());
 		lblHumidity.setText(temperature.getHumidityStr());
-		lblWind.setText(wind.getWindStr());
 
+		if (wind != null) {
+			lblWind.setText(wind.getWindStr());
+		}
+	}
+
+	private void emptyDataLabels() {
+		lblMinMaxTemperature.setText("");
+		lblMainTemperature.setText("");
+		lblMainDescription.setText("");
+		lblDetailedDescription.setText("");
+		lblHumidity.setText("");
+		lblWind.setText("");
+	}
+
+	private void showMessageBox(String message) {
+		JOptionPane.showMessageDialog(null, message, "Weather", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 }

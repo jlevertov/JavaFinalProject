@@ -57,6 +57,9 @@ public class OpenWeatherMapService implements IWeatherDataService {
 		JsonObject jTempObj = null;
 		JsonObject jWindObj = null;
 
+		JsonNumber jWindSpeed = null;
+		JsonNumber jWindDegree = null;
+
 		WeatherDescription wDescription = null;
 		Temperature wTemperature = null;
 		Wind wWind = null;
@@ -78,19 +81,22 @@ public class OpenWeatherMapService implements IWeatherDataService {
 					jTempObj.getJsonNumber("humidity").doubleValue());
 
 			jWindObj = jMainObj.getJsonObject("wind");
-			wWind = new Wind(MathUtils.round(jWindObj.getJsonNumber("speed").doubleValue(), 2),
-					MathUtils.round(jWindObj.getJsonNumber("deg").doubleValue(), 2));
+			jWindSpeed = jWindObj.getJsonNumber("speed");
+			jWindDegree = jWindObj.getJsonNumber("deg");
+
+			if (jWindSpeed != null && jWindDegree != null) {
+				wWind = new Wind(MathUtils.round(jWindSpeed.doubleValue(), 2),
+						MathUtils.round(jWindDegree.doubleValue(), 2));
+			}
 
 			wData = new WeatherData(wDescription, wTemperature, wWind);
 
+		} catch (UrlRequestWrapperException e) {
+			throw new WeatherDataServiceExeption("Selected location is unsupported!", e);
 		} catch (IllegalArgumentException e) {
 			throw new WeatherDataServiceExeption(exceptionMessage + " (IllegalArgumentException)", e);
-		} catch (UrlRequestWrapperException e) {
-			throw new WeatherDataServiceExeption(exceptionMessage + " (UrlRequestWrapperException)", e);
 		} catch (Exception e) {
 			throw new WeatherDataServiceExeption(exceptionMessage + " (Exception)", e);
-		} finally {
-			jReader.close();
 		}
 
 		return wData;

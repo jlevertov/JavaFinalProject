@@ -158,14 +158,14 @@ public class Temperature {
 	public String getMinMaxStr() {
 		return Double.toString(min) + "° - " + Double.toString(max) + "°";
 	}
-	
+
 	/**
 	 * Get humidity as formatted string.
 	 * 
 	 * @return Humidity as formatted string.
 	 */
 	public String getHumidityStr() {
-		return Double.toString(humidity) + "%";
+		return "Humidity: " + Double.toString(humidity) + "%";
 	}
 
 	/**
