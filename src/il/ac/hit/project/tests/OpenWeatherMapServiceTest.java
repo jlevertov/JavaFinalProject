@@ -1,4 +1,4 @@
-package il.ac.hit.project;
+package il.ac.hit.project.tests;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,11 @@ import java.io.InputStream;
 import org.json.*;
 import org.junit.*;
 
+import il.ac.hit.project.Location;
+import il.ac.hit.project.MathUtils;
+import il.ac.hit.project.OpenWeatherMapService;
+import il.ac.hit.project.UrlRequestWrapper;
+import il.ac.hit.project.WeatherData;
 import il.ac.hit.project.weather.Temperature;
 import il.ac.hit.project.weather.WeatherDescription;
 import il.ac.hit.project.weather.Wind;

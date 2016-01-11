@@ -1,4 +1,4 @@
-package il.ac.hit.project;
+package il.ac.hit.project.tests;
 
 import static org.junit.Assert.*;
 
@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import il.ac.hit.project.UrlRequestWrapper;
 import il.ac.hit.project.exceptions.UrlRequestWrapperException;
 
 public class UrlRequestWrapperTest {
