@@ -142,6 +142,33 @@ public class Temperature {
 	}
 
 	/**
+	 * Get main temperature as formatted string.
+	 * 
+	 * @return Main temperature as formatted string.
+	 */
+	public String getMainStr() {
+		return Double.toString(main) + "°";
+	}
+
+	/**
+	 * Get minimum and maximum temperature as formatted string.
+	 * 
+	 * @return Minimum and maximum temperature as formatted string.
+	 */
+	public String getMinMaxStr() {
+		return Double.toString(min) + "° - " + Double.toString(max) + "°";
+	}
+	
+	/**
+	 * Get humidity as formatted string.
+	 * 
+	 * @return Humidity as formatted string.
+	 */
+	public String getHumidityStr() {
+		return Double.toString(humidity) + "%";
+	}
+
+	/**
 	 * Calculates hash code for this object.
 	 */
 	@Override

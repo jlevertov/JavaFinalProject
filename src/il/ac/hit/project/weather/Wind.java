@@ -73,6 +73,15 @@ public class Wind {
 	}
 
 	/**
+	 * Get wind details as formatted string.
+	 * 
+	 * @return Wind details as formatted string.
+	 */
+	public String getWindStr() {
+		return "Wind: " + Double.toString(speed) + " mps, " + Double.toString(degree) + "°";
+	}
+
+	/**
 	 * Calculates hash code for this object.
 	 */
 	@Override

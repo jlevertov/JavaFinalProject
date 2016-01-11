@@ -34,7 +34,12 @@ public class LocationsCollection {
 	
 	public static ArrayList<String> getCities(String country)
 	{
-		return countriesToCities.get(country);
+		ArrayList<String> cities = new ArrayList<String>();
+		for(String city : countriesToCities.get(country))
+		{
+			cities.add(city.replaceAll("\"", ""));
+		}
+		return cities;
 	}
 
 }
