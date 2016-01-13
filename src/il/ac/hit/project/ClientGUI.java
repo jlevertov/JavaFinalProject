@@ -87,18 +87,33 @@ public class ClientGUI {
 		pnlInputFields.add(cboCity);
 		pnlInputFields.add(btnGo);
 
-		pnlWeather.setLayout(new GridLayout(6,1));
-		pnlWeather.setAlignmentX(Component.CENTER_ALIGNMENT);
+		pnlWeather.setLayout(new GridLayout(6,3));
 //		pnlWeather.setAlignmentY(Component.TOP_ALIGNMENT);
-		pnlWeather.setBounds(0, pnlInputFields.getHeight(), frmMain.getWidth(), frmMain.getHeight()-pnlInputFields.getHeight());
-		pnlWeather.setBackground(new Color(0, 255, 0));
+		//pnlWeather.setBackground(new Color(0, 255, 0));
+		pnlWeather.add(new JLabel(""));
 		pnlWeather.add(lblMinMaxTemperature);
+		pnlWeather.add(new JLabel(""));
+		
+		pnlWeather.add(new JLabel(""));
 		pnlWeather.add(lblMainTemperature);
+		pnlWeather.add(new JLabel(""));
+		
+		pnlWeather.add(new JLabel(""));
 		pnlWeather.add(lblMainDescription);
+		pnlWeather.add(new JLabel(""));
+		
+		pnlWeather.add(new JLabel(""));
 		pnlWeather.add(lblDetailedDescription);
+		pnlWeather.add(new JLabel(""));
+		
+		pnlWeather.add(new JLabel(""));
 		pnlWeather.add(lblHumidity);
+		pnlWeather.add(new JLabel(""));
+		
+		pnlWeather.add(new JLabel(""));
 		pnlWeather.add(lblWind);
-
+		pnlWeather.add(new JLabel(""));
+		
 		frmMain.setLayout(new BoxLayout(frmMain.getContentPane(), BoxLayout.Y_AXIS));
 		frmMain.add(lblHeader);
 		frmMain.add(pnlInputFields);
@@ -178,8 +193,8 @@ public class ClientGUI {
 		Temperature temperature = weatherData.getTemperature();
 		Wind wind = weatherData.getWind();
 
-		lblMinMaxTemperature.setText(temperature.getMinMaxStr());
-		lblMainTemperature.setText(temperature.getMainStr());
+		lblMinMaxTemperature.setText("Min-Max Temperature: " + temperature.getMinMaxStr());
+		lblMainTemperature.setText("Current Temperature: " + temperature.getMainStr());
 		lblMainDescription.setText(description.getMain());
 		lblDetailedDescription.setText(description.getDetailed());
 		lblHumidity.setText(temperature.getHumidityStr());
