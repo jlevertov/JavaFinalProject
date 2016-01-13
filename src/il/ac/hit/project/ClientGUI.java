@@ -1,6 +1,7 @@
 package il.ac.hit.project;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import il.ac.hit.project.exceptions.*;
 import il.ac.hit.project.weather.*;
@@ -15,12 +16,14 @@ public class ClientGUI {
 
 	private JFrame frmMain;
 	private JLabel lblHeader;
+	private JPanel pnlInputFields;
+	private JPanel pnlWeather;
+
 	private JLabel lblCountry;
 	private JComboBox<String> cboCountry;
 	private JLabel lblCity;
 	private JComboBox<String> cboCity;
 	private JButton btnGo;
-	private JPanel pnlWeather;
 
 	// private Image imgIcon;
 	// Try: JLabel lblIcon; lblIcon.SetIcon(new ImageIcon(imgIcon));
@@ -40,13 +43,15 @@ public class ClientGUI {
 		}
 
 		frmMain = new JFrame("Weather Service - Java Final Project - Ran&Jacob");
+		pnlInputFields = new JPanel();
+		pnlWeather = new JPanel();
+
 		lblHeader = new JLabel("Weather");
 		lblCountry = new JLabel("Country");
 		cboCountry = new JComboBox<>();
 		lblCity = new JLabel("City");
 		cboCity = new JComboBox<>();
 		btnGo = new JButton("Go!");
-		pnlWeather = new JPanel();
 
 		// imgIcon=new
 		lblMinMaxTemperature = new JLabel();
@@ -75,7 +80,18 @@ public class ClientGUI {
 
 	private void loadFrame() {
 
-		pnlWeather.setLayout(new FlowLayout());
+		pnlInputFields.setLayout(new FlowLayout());
+		pnlInputFields.add(lblCountry);
+		pnlInputFields.add(cboCountry);
+		pnlInputFields.add(lblCity);
+		pnlInputFields.add(cboCity);
+		pnlInputFields.add(btnGo);
+
+		pnlWeather.setLayout(new GridLayout(6,1));
+		pnlWeather.setAlignmentX(Component.CENTER_ALIGNMENT);
+//		pnlWeather.setAlignmentY(Component.TOP_ALIGNMENT);
+		pnlWeather.setBounds(0, pnlInputFields.getHeight(), frmMain.getWidth(), frmMain.getHeight()-pnlInputFields.getHeight());
+		pnlWeather.setBackground(new Color(0, 255, 0));
 		pnlWeather.add(lblMinMaxTemperature);
 		pnlWeather.add(lblMainTemperature);
 		pnlWeather.add(lblMainDescription);
@@ -83,21 +99,16 @@ public class ClientGUI {
 		pnlWeather.add(lblHumidity);
 		pnlWeather.add(lblWind);
 
-		frmMain.setLayout(new FlowLayout());
+		frmMain.setLayout(new BoxLayout(frmMain.getContentPane(), BoxLayout.Y_AXIS));
 		frmMain.add(lblHeader);
-		frmMain.add(lblCountry);
-		frmMain.add(cboCountry);
-		frmMain.add(lblCity);
-		frmMain.add(cboCity);
-		frmMain.add(btnGo);
+		frmMain.add(pnlInputFields);
 		frmMain.add(pnlWeather);
 
-		cboCountry.addItem("");
 		for (String country : LocationsCollection.getCountries()) {
 			cboCountry.addItem(country);
 		}
 		cboCity.addItem("");
-
+		
 		frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMain.setSize(800, 300);
 		frmMain.setVisible(true);

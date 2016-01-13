@@ -27,9 +27,11 @@ public class LocationsCollection {
 		}
 	}
 	
-	public static Set<String> getCountries()
+	public static ArrayList<String> getCountries()
 	{
-		return countriesToCities.keySet();
+		ArrayList<String> sortedCountriesList = new ArrayList<String>(countriesToCities.keySet());
+		Collections.sort(sortedCountriesList);
+		return sortedCountriesList;
 	}
 	
 	public static ArrayList<String> getCities(String country)
@@ -39,6 +41,7 @@ public class LocationsCollection {
 		{
 			cities.add(city.replaceAll("\"", ""));
 		}
+		Collections.sort(cities);
 		return cities;
 	}
 
