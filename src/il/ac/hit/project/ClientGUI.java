@@ -1,14 +1,18 @@
 package il.ac.hit.project;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
 
 import il.ac.hit.project.exceptions.*;
 import il.ac.hit.project.weather.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class ClientGUI {
 
@@ -25,14 +29,18 @@ public class ClientGUI {
 	private JComboBox<String> cboCity;
 	private JButton btnGo;
 
-	// private Image imgIcon;
-	// Try: JLabel lblIcon; lblIcon.SetIcon(new ImageIcon(imgIcon));
+	private JLabel lblIcon;
 	private JLabel lblMinMaxTemperature;
 	private JLabel lblMainTemperature;
 	private JLabel lblMainDescription;
 	private JLabel lblDetailedDescription;
 	private JLabel lblHumidity;
 	private JLabel lblWind;
+
+	private static final int HEADER_FONT_SIZE = 50;
+	private static final int DEFAULT_FONT_SIZE = 16;
+	private static final int MAIN_FONT_SIZE = 20;
+	private static final int WEATHER_FONT_SIZE = 14;
 
 	public ClientGUI() {
 		service = null;
@@ -53,11 +61,9 @@ public class ClientGUI {
 		cboCity = new JComboBox<>();
 		btnGo = new JButton("Go!");
 
-		// imgIcon=new
-		lblMinMaxTemperature = new JLabel();
-		lblMainTemperature = new JLabel();
-		cboCountry = new JComboBox<>();
-		cboCity = new JComboBox<>();
+		lblIcon = new JLabel();
+		lblMinMaxTemperature = new JLabel("", JLabel.CENTER);
+		lblMainTemperature = new JLabel("", JLabel.CENTER);
 		lblMainDescription = new JLabel();
 		lblDetailedDescription = new JLabel();
 		lblHumidity = new JLabel();
@@ -80,6 +86,20 @@ public class ClientGUI {
 
 	private void loadFrame() {
 
+		lblHeader.setFont(new Font(lblHeader.getName(), lblHeader.getFont().getStyle(), HEADER_FONT_SIZE));
+		lblMainTemperature.setFont(
+				new Font(lblMainTemperature.getName(), lblMainTemperature.getFont().getStyle(), MAIN_FONT_SIZE));
+		lblMainDescription.setFont(
+				new Font(lblMainDescription.getName(), lblMainDescription.getFont().getStyle(), MAIN_FONT_SIZE));
+		lblCity.setFont(new Font(lblCity.getName(), lblCity.getFont().getStyle(), DEFAULT_FONT_SIZE));
+		lblCountry.setFont(new Font(lblCountry.getName(), lblCountry.getFont().getStyle(), DEFAULT_FONT_SIZE));
+		lblMinMaxTemperature.setFont(
+				new Font(lblMinMaxTemperature.getName(), lblMinMaxTemperature.getFont().getStyle(), WEATHER_FONT_SIZE));
+		lblDetailedDescription.setFont(new Font(lblDetailedDescription.getName(),
+				lblDetailedDescription.getFont().getStyle(), WEATHER_FONT_SIZE));
+		lblHumidity.setFont(new Font(lblHumidity.getName(), lblHumidity.getFont().getStyle(), WEATHER_FONT_SIZE));
+		lblWind.setFont(new Font(lblWind.getName(), lblWind.getFont().getStyle(), WEATHER_FONT_SIZE));
+
 		pnlInputFields.setLayout(new FlowLayout());
 		pnlInputFields.add(lblCountry);
 		pnlInputFields.add(cboCountry);
@@ -87,33 +107,47 @@ public class ClientGUI {
 		pnlInputFields.add(cboCity);
 		pnlInputFields.add(btnGo);
 
-		pnlWeather.setLayout(new GridLayout(6,3));
-//		pnlWeather.setAlignmentY(Component.TOP_ALIGNMENT);
-		//pnlWeather.setBackground(new Color(0, 255, 0));
-		pnlWeather.add(new JLabel(""));
-		pnlWeather.add(lblMinMaxTemperature);
-		pnlWeather.add(new JLabel(""));
-		
-		pnlWeather.add(new JLabel(""));
-		pnlWeather.add(lblMainTemperature);
-		pnlWeather.add(new JLabel(""));
-		
-		pnlWeather.add(new JLabel(""));
-		pnlWeather.add(lblMainDescription);
-		pnlWeather.add(new JLabel(""));
-		
-		pnlWeather.add(new JLabel(""));
-		pnlWeather.add(lblDetailedDescription);
-		pnlWeather.add(new JLabel(""));
-		
-		pnlWeather.add(new JLabel(""));
-		pnlWeather.add(lblHumidity);
-		pnlWeather.add(new JLabel(""));
-		
-		pnlWeather.add(new JLabel(""));
-		pnlWeather.add(lblWind);
-		pnlWeather.add(new JLabel(""));
-		
+		GridBagLayout gbLayout = new GridBagLayout();
+		pnlWeather.setLayout(gbLayout);
+
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.ipadx = 10;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 4;
+		pnlWeather.add(lblIcon, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		pnlWeather.add(lblMinMaxTemperature, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		pnlWeather.add(lblMainTemperature, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.ipady = 20;
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		pnlWeather.add(lblMainDescription, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridy = 1;
+		pnlWeather.add(lblDetailedDescription, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridy = 2;
+		pnlWeather.add(lblHumidity, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridy = 3;
+		pnlWeather.add(lblWind, gbc);
+
 		frmMain.setLayout(new BoxLayout(frmMain.getContentPane(), BoxLayout.Y_AXIS));
 		frmMain.add(lblHeader);
 		frmMain.add(pnlInputFields);
@@ -123,9 +157,13 @@ public class ClientGUI {
 			cboCountry.addItem(country);
 		}
 		cboCity.addItem("");
-		
+
+		Color backColor = new Color(200, 230, 250);
+		frmMain.getContentPane().setBackground(backColor);
+		pnlInputFields.setOpaque(false);
+		pnlWeather.setOpaque(false);
+		frmMain.setSize(700, 450);
 		frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmMain.setSize(800, 300);
 		frmMain.setVisible(true);
 	}
 
@@ -193,8 +231,34 @@ public class ClientGUI {
 		Temperature temperature = weatherData.getTemperature();
 		Wind wind = weatherData.getWind();
 
-		lblMinMaxTemperature.setText("Min-Max Temperature: " + temperature.getMinMaxStr());
-		lblMainTemperature.setText("Current Temperature: " + temperature.getMainStr());
+		URL url = null;
+		try {
+			url = new URL("http://openweathermap.org/img/w/" + description.getIcon() + ".png");
+		} catch (MalformedURLException e) {
+			showMessageBox("Couldn't load weather icon from URL!");
+		}
+
+		if (url != null) {
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(url);
+			} catch (IOException e) {
+				showMessageBox("Couldn't load weather icon as buffered image!");
+			}
+			if (image != null) {
+				int newSize = 150;
+				BufferedImage resized = new BufferedImage(newSize, newSize, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = resized.createGraphics();
+				g.drawImage(image, 0, 0, newSize, newSize, null);
+				g.dispose();
+
+				ImageIcon iconResized = new ImageIcon(resized);
+				lblIcon.setIcon(iconResized);
+			}
+		}
+
+		lblMinMaxTemperature.setText(temperature.getMinMaxStr());
+		lblMainTemperature.setText(temperature.getMainStr());
 		lblMainDescription.setText(description.getMain());
 		lblDetailedDescription.setText(description.getDetailed());
 		lblHumidity.setText(temperature.getHumidityStr());

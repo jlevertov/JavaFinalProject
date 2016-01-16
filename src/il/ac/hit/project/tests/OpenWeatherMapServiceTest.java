@@ -59,7 +59,7 @@ public class OpenWeatherMapServiceTest {
 
 		JSONObject jWeatherObj = jMainObj.getJSONArray("weather").getJSONObject(0);
 		WeatherDescription wDescription = new WeatherDescription(jWeatherObj.getString("main"),
-				jWeatherObj.getString("description"));
+				jWeatherObj.getString("description"), jWeatherObj.getString("icon"));
 
 		JSONObject jTempObj = jMainObj.getJSONObject("main");
 		Temperature wTemperature = new Temperature(

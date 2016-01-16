@@ -9,6 +9,7 @@ package il.ac.hit.project.weather;
 public class WeatherDescription {
 	private String main;
 	private String detailed;
+	private String icon;
 
 	/**
 	 * C'tor.
@@ -19,9 +20,10 @@ public class WeatherDescription {
 	 *            Weather detailed description.
 	 * @throws Exception
 	 */
-	public WeatherDescription(String main, String detailed) throws Exception {
+	public WeatherDescription(String main, String detailed, String icon) throws Exception {
 		setMain(main);
 		setDetailed(detailed);
+		setIcon(icon);
 	}
 
 	/**
@@ -69,6 +71,30 @@ public class WeatherDescription {
 			this.detailed = detailed;
 		} else {
 			throw new Exception("Detailed description is null or empty!");
+		}
+	}
+
+	/**
+	 * Get icon ID.
+	 * 
+	 * @return Icon ID.
+	 */
+	public String getIcon() {
+		return icon;
+	}
+
+	/**
+	 * Set icon ID (with validation).
+	 * 
+	 * @param icon
+	 *            Icon ID.
+	 * @throws Exception
+	 */
+	private void setIcon(String icon) throws Exception {
+		if (icon != null && !icon.isEmpty()) {
+			this.icon = icon;
+		} else {
+			throw new Exception("Icon ID is null or empty!");
 		}
 	}
 

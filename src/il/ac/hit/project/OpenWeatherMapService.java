@@ -71,7 +71,8 @@ public class OpenWeatherMapService implements IWeatherDataService {
 			jMainObj = jReader.readObject();
 
 			jWeatherObj = jMainObj.getJsonArray("weather").getJsonObject(0);
-			wDescription = new WeatherDescription(jWeatherObj.getString("main"), jWeatherObj.getString("description"));
+			wDescription = new WeatherDescription(jWeatherObj.getString("main"), jWeatherObj.getString("description"),
+					jWeatherObj.getString("icon"));
 
 			jTempObj = jMainObj.getJsonObject("main");
 			wTemperature = new Temperature(
