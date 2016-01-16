@@ -162,7 +162,7 @@ public class ClientGUI {
 		frmMain.getContentPane().setBackground(backColor);
 		pnlInputFields.setOpaque(false);
 		pnlWeather.setOpaque(false);
-		frmMain.setSize(700, 450);
+		frmMain.setSize(800, 450);
 		frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMain.setVisible(true);
 	}
